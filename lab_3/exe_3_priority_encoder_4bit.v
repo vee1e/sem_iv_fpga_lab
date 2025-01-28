@@ -1,7 +1,7 @@
 module exe_3_priority_encoder_4bit (
-    input [3:0] in, 
-    input clk,            
-    input reset, 
+    input [3:0] in,
+    input clk,
+    input reset,
     output reg [1:0] out,
     output reg valid
 );
@@ -15,13 +15,13 @@ module exe_3_priority_encoder_4bit (
                 out <= 2'b11;
                 valid <= 1'b1;
             end else if (in[2]) begin
-                out <= 2'b10; 
+                out <= 2'b10;
                 valid <= 1'b1;
             end else if (in[1]) begin
                 out <= 2'b01;
                 valid <= 1'b1;
             end else if (in[0]) begin
-                out <= 2'b00; 
+                out <= 2'b00;
                 valid <= 1'b1;
             end else begin
                 out <= 2'b00;

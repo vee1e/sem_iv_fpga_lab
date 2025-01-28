@@ -6,12 +6,12 @@ module exe_2_mod5_counter (
 
 always @(posedge clk) begin
     if (reset) begin
-        count <= 3'b000; 
+        count <= 3'b000;
     end else begin
         if (count == 3'b100) begin
-            count <= 3'b000; 
+            count <= 3'b000;
         end else begin
-            count <= count + 1; 
+            count <= count + 1;
         end
     end
 end

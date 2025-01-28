@@ -26,12 +26,12 @@ module exe_4_msjk_tb;
 
         #5 reset = 1;
         #10 reset = 0;
-        
+
         #5 J = 1; K = 0;
         #10 J = 0; K = 1;
         #10 J = 1; K = 1;
         #10 J = 0; K = 0;
-        
+
         #20 $finish;
     end
 
