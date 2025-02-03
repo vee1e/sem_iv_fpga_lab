@@ -1,15 +1,15 @@
-module mod10_counter(
-  input clk, rst,
-  output reg [3:0] count
+module mod10_cnter(
+  input c, r,
+  output reg [3:0] cnt
 );
-  
-  always @(posedge clk or posedge rst) begin
-    if (rst)
-      count <= 4'd0;
-    else if (count == 4'd9)
-      count <= 4'd0;
+
+  always @(posedge c or posedge r) begin
+    if (r)
+      cnt <= 4'd0;
+    else if (cnt == 4'd9)
+      cnt <= 4'd0;
     else
-      count <= count + 1;
+      cnt <= cnt + 1;
   end
-  
+
 endmodule
