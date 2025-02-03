@@ -1,15 +1,15 @@
 module piso_shift_register(
-  input clk, rst, load,
+  input c, r, l,
   input [3:0] pi,
   output reg so
 );
 
   reg [3:0] data;
 
-  always @(posedge clk or posedge rst) begin
-    if (rst)
+  always @(posedge c or posedge r) begin
+    if (r)
       data <= 4'b0000;
-    else if (load)
+    else if (l)
       data <= pi;
     else begin
       so <= data[3];
