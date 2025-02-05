@@ -1,9 +1,9 @@
 ---
 title: "DES ENCRYPTION IN FPGA USING VERILOG"
-author:
-  - Lakshit Verma
-  - Priyansh Sarkar
-  - Ayush Gupta
+author: |
+  \textbf{Lakshit Verma}  \texttt{\small(230959210)}
+  \textbf{Priyansh Sarkar}  \texttt{\small(230959200)}
+  \textbf{Ayush Gupta}  \texttt{\small(230959206)}
 date: "February 5, 2025"
 geometry: margin=3cm
 ...
