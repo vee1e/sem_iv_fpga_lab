@@ -1,5 +1,5 @@
 ---
-title: "DES Encryption and Decryption using Verilog"
+title: "DES ENCRYPTION IN FPGA USING VERILOG"
 author:
   - Lakshit Verma
   - Priyansh Sarkar
@@ -8,12 +8,11 @@ date: "February 5, 2025"
 geometry: margin=3cm
 ...
 
-# DES Encryption and Decryption in FPGA Using Verilog
-
 ## 1. INTRODUCTION
 
 ### a. Background Information
-The Data Encryption Standard (DES) is a symmetric-key algorithm for the encryption of digital data, originally developed in the early 1970s by IBM and later adopted as a federal standard by the U.S. National Institute of Standards and Technology (NIST) under **FIPS PUB 46-3**. DES operates on 64-bit blocks of plaintext using a 56-bit key and involves 16 rounds of permutation and substitution operations.
+
+The Data Encryption Standard (DES) is a symmetric-key algorithm for the encryption of digital data, originally developed in the early 1970s by IBM and later adopted as a federal standard by the U.S. National Institute of Standards and Technology (NIST) under **FIPS PUB 46-3**. DES operates on 64-bit blocks of plaintext using a 64-bit key and involves 16 rounds of permutation and substitution operations. For brevity's sake, our implementation works on a single 64-bit block of data.
 
 ### b. Objectives and Scope
 This project aims to implement the DES encryption and decryption process on an FPGA using Verilog. The main objectives are:
@@ -39,27 +38,25 @@ The design consists of multiple modules, including:
 ### d. Problem Definition and Motivation
 With increasing threats to data security, implementing encryption algorithms in hardware provides enhanced performance and resistance to software-based attacks. An FPGA-based DES implementation ensures low-latency encryption, making it ideal for high-speed secure communication applications.
 
-\pagebreak
-
 ## 2. SYSTEM DESIGN AND ARCHITECTURE
 
 ### a. High-Level Design Overview
 The DES encryption system follows a **Feistel network** structure with 16 rounds of operations. The block diagram of the system is as follows:
 
 ```
-+------------------+          +--------------+        +--------------+
-|    Input Data    |  ----->  | Initial Perm | ---->  | 16 Round Ops |
-+------------------+          +--------------+        +--------------+
-                                                              |
-                                                              v
-+-------------------+         +--------------+        +--------------+
-|   Key Expansion   | ----->  |  Round Keys  | ---->  | Feistel Func |
-+-------------------+         +--------------+        +--------------+
-                                                              |
-                                                              v
-                               +------------+          +------------+
-                               | Final Perm |  <-----  |   Output   |
-                               +------------+          +------------+
+      +------------------+          +--------------+        +--------------+
+      |    Input Data    |  ----->  | Initial Perm | ---->  | 16 Round Ops |
+      +------------------+          +--------------+        +--------------+
+                                                                    |
+                                                                    v
+      +-------------------+         +--------------+        +--------------+
+      |   Key Expansion   | ----->  |  Round Keys  | ---->  | Feistel Func |
+      +-------------------+         +--------------+        +--------------+
+                                                                    |
+                                                                    v
+                                     +------------+          +------------+
+                                     | Final Perm |  <-----  |   Output   |
+                                     +------------+          +------------+
 ```
 
 
@@ -80,27 +77,42 @@ The system consists of the following major components:
 4. **Final Permutation (`IP_inv`):** Restores the bit order after processing.
 
 ### c. Key Modules and Interconnections
-- `f.v`: Implements the Feistel function using expansion, S-box substitution, and permutation.
-- `KS.v`: Implements the key scheduling algorithm to generate round keys.
-- `IP.v` and `IP_inv.v`: Initial and final permutations.
-- `DES.v`: The main module integrating all components.
-- `testbench.v`: Used for verifying the correctness of the design.
+- `f`: Implements the Feistel function using expansion, S-box substitution, and permutation.
+- `KS`: Implements the key scheduling algorithm to generate round keys.
+- `IP` and `IP_inv`: Initial and final permutations.
+- `DES`: The main module integrating all components.
+- `testbench`: Used for verifying the correctness of the design.
 
 ### d. Design Choices
-- **Pipeline-Based Execution:** Ensures efficient processing.
+
 - **Use of Bitwise XOR for Key Mixing:** Enhances security while keeping logic simple.
 - **Modular Approach:** Enhances readability, reusability, and debugging.
 
-## 3. RESULTS
+\pagebreak
 
-### a. Expected Simulation Results
+## 3. RESULTS AND WAVEFORMS
 
-The testbench verifies the DES encryption module using multiple test cases.
+The testbench verifies the DES encryption module using a testbench:
 
-#### Waveform Analysis:
+```
+module testbench;
+  reg [64:1] M;
+  reg [64:1] K;
+  wire [64:1] OUT;
 
-- The simulation results are expected to show correct transformations at each round.
-- The final output should match the expected ciphertext.
+  DES des_inst(M, K, OUT); // Our DES module
+
+  initial begin
+    M = 64'h3f91a2c7d1b085ef; // Plaintext
+    K = 64'he2499d7a4bc017ab; // Key
+    #1
+    $finish;
+  end
+  initial $monitor($time, " M=0x%x, K=0x%x, OUT=0x%x", M, K, OUT); // OUT = Ciphertext
+endmodule
+```
+
+![The expected waveforms](./graph.svg){ width=78% }
 
 ## 4. CONCLUSION
 This project successfully implements the DES encryption algorithm using Verilog, verifying its correctness through testbenches and simulations. The modular design ensures flexibility for future improvements, such as optimizing for speed or power efficiency. The FPGA-based approach provides a high-performance alternative to software implementations, making it suitable for security-critical applications.
