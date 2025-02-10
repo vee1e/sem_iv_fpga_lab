@@ -1,5 +1,5 @@
 ---
-title: "DES ENCRYPTION IN FPGA USING VERILOG"
+title: "**FPGA BASED SYSTEM DESIGN MINI PROJECT**"
 author: |
   \textbf{Lakshit Verma}  \texttt{\small(230959210)}
   \textbf{Priyansh Sarkar}  \texttt{\small(230959200)}
@@ -7,6 +7,8 @@ author: |
 date: "February 5, 2025"
 geometry: margin=3cm
 ...
+
+\begin{center}\textbf{Title: DES Encryption and Decryption in FPGA using Verilog}\end{center}
 
 ## 1. INTRODUCTION
 
@@ -96,11 +98,11 @@ The testbench verifies the DES encryption module using a testbench:
 
 ```
 module testbench;
-  reg [64:1] M;
-  reg [64:1] K;
+  reg  [64:1] M;
+  reg  [64:1] K;
   wire [64:1] OUT;
 
-  DES des_inst(M, K, OUT); // Our DES module
+  DES_ENC des_inst(M, K, OUT); // Our DES encryption module
 
   initial begin
     M = 64'h3f91a2c7d1b085ef; // Plaintext
@@ -109,6 +111,24 @@ module testbench;
     $finish;
   end
   initial $monitor($time, " M=0x%x, K=0x%x, OUT=0x%x", M, K, OUT); // OUT = Ciphertext
+endmodule
+```
+
+A similar testbench is used for the decryption module.
+
+```
+.
+.
+.
+  DES_DEC des_inst(C, K, OUT); // Our DES decryption module
+
+  initial begin
+    C = 64'h6s24n5p0q4o318rs; // Ciphertext
+    K = 64'he2499d7a4bc017ab; // Key
+    #1
+    $finish;
+  end
+  initial $monitor($time, " C=0x%x, K=0x%x, OUT=0x%x", C, K, OUT); // OUT = Plaintext
 endmodule
 ```
 
