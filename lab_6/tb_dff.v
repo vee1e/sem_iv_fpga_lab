@@ -24,6 +24,6 @@ d = 0;
 #10 $finish;
 end
 
-initial 
+initial
 $monitor($time, " rst=%b d=%b clk=%b q=%b", rst, d, clk, q);
 endmodule
