@@ -19,7 +19,7 @@ module button_to_seven_segment(
 
     always @(*) begin
         seg = BLANK;
-        
+
         if (btn[0])      // BTNR
             seg = P_PATTERN;
         else if (btn[1]) // BTNU
@@ -30,7 +30,7 @@ module button_to_seven_segment(
             seg = D_PATTERN;
         else if (btn[4]) // BTNC
             seg = C_PATTERN;
-            
+
         an = 4'b1110;
     end
 endmodule
