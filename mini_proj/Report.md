@@ -1,6 +1,5 @@
 ---
-title: "FPGA-BASED SYSTEM DESIGN LAB — MINI PROJECT REPORT"
-author:
+title: "FPGA SYSTEM DESIGN LAB — MINI PROJECT REPORT"
 author: |
   \textbf{Lakshit Verma}  \texttt{\small(230959210)}
   \textbf{Priyansh Sarkar}  \texttt{\small(230959200)}
@@ -8,6 +7,10 @@ author: |
 date: "April 2025"
 geometry: margin=3cm
 ...
+
+\begin{center}
+\textit{\Large DES Encryption and Decryption in Verilog on FPGA}
+\end{center}
 
 # INTRODUCTION
 
@@ -19,13 +22,13 @@ The Data Encryption Standard (DES) is a symmetric-key algorithm widely used for 
 
 **Objectives:**
 
-- Implement DES encryption using Verilog on an FPGA.
+- Implement DES encryption/decryption using Verilog on an FPGA.
 - Optimize the design for speed and resource efficiency.
 - Ensure correctness by comparing results with known DES outputs.
 
 **Scope:**
 
-- Only encryption is considered; decryption is not implemented.
+- Both decryption and encryption are implemented.
 - The design includes key scheduling and Feistel function implementation.
 - The project is tested on software only; hardware testing on an actual FPGA board is not included.
 
@@ -154,15 +157,19 @@ The control unit is responsible for managing the overall flow of data and synchr
    - Left shifts are applied per round.
    - `PC2` generates subkeys.
 
-**`DES` Module**
+**`DES_enc` and `DES_dec` Module**
 
 1. **Function:**
-   - Implements the DES encryption process.
-   - Uses 16 rounds of Feistel structure.
+   - Implement the DES encryption process.
+   - Use the 16 rounds of Feistel structure.
 
 2. **Inputs and Outputs:**
-   - **Inputs:** `in` (64-bit) – Plaintext, `key` (64-bit) – Encryption key.
-   - **Output:** `out` (64-bit) – Ciphertext.
+   - For `DES_enc`:
+   a. **Inputs:** `in` (64-bit) – Plaintext, `key` (64-bit) – Encryption key.
+   b. **Output:** `out` (64-bit) – Ciphertext.
+   - For `DES_dec`:
+   c. **Inputs:** `in` (64-bit) – Ciphertext, `key` (64-bit) – Decryption key.
+   d. **Output:** `out` (64-bit) – Plaintext.
 
 3. **Encryption Process:**
    - `IP` permutes input.
@@ -171,6 +178,10 @@ The control unit is responsible for managing the overall flow of data and synchr
      - `R[i] = L[i-1]` $\oplus$ ` f(R[i-1], K[i])`
      - `L[i] = R[i-1]`
    - `IP_inv` permutes the final swapped halves to produce `out`.
+
+4. **Decryption Process:**
+   - Similar to encryption but uses the subkeys in reverse order.
+   - The same `IP` and `IP_inv` are applied.
 
 **Interconnection Between Modules**
 
@@ -181,7 +192,7 @@ The control unit is responsible for managing the overall flow of data and synchr
 2. **`DES` → Output (`out`)**
    - The `DES` module encrypts the input message and outputs the final ciphertext.
 
-### Explanation of Design Choices Made for the Architecture
+## Explanation of Design Choices Made for the Architecture
 
 1. **Pipeline Optimization:** The design leverages pipelining to improve throughput, allowing multiple encryption operations to be processed simultaneously.
 
@@ -197,7 +208,7 @@ The control unit is responsible for managing the overall flow of data and synchr
 
 ## CONCLUSION
 
-This project successfully implemented the Data Encryption Standard (DES) algorithm using Verilog, achieving encryption through a structured Feistel network. The design incorporates key expansion, generating 16 subkeys from a 64-bit key using proper permutations (PC1, PC2) and shifting operations. The encryption process follows 16 iterative rounds, where each round applies expansion (E), S-Box substitution, and P-Box permutation to ensure diffusion and confusion. Initial and Final Permutations ($IP$ and $IP^{-1}$) further enhance security, making the encryption robust.
+This project successfully implemented the Data Encryption Standard (DES) algorithm using Verilog, achieving encryption through a structured Feistel network. The design incorporates key expansion, generating 16 subkeys from a 64-bit key using proper permutations (`PC1`, `PC2`) and shifting operations. The encryption process follows 16 iterative rounds, where each round applies expansion (`E`), S-Box substitution, and P-Box permutation to ensure diffusion and confusion. The `IP` and `IP_inv` modules are used for initial and final permutations respectively, to enchance security further.
 
 By structuring the implementation into modular components (`ProcessKey` and `Encrypt`), the design remains efficient, reusable, and adaptable for hardware-based cryptographic applications such as FPGA and ASIC systems.
 
