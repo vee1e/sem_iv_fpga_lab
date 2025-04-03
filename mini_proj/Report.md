@@ -12,6 +12,7 @@ geometry: margin=3cm
 # INTRODUCTION
 
 ## 1. Background Information
+
 The Data Encryption Standard (DES) is a symmetric-key algorithm widely used for data security. It operates on 64-bit data blocks using a 56-bit key and follows 16 rounds of Feistel network-based encryption. With the rise of FPGA technology, hardware implementations of cryptographic algorithms like DES offer speed and efficiency advantages over software-based encryption.
 
 ## 2. Objectives and Scope
@@ -60,92 +61,120 @@ The design follows the standard DES encryption process:
 
 ### **Description of the Overall System Architecture**
 
-The system is a hardware implementation of a DES-like encryption algorithm on an FPGA. It consists of key scheduling, encryption, and control modules, ensuring efficient data flow and processing. The architecture is optimized for parallelism and pipelining to achieve high throughput.
+The system is composed of three main components: key scheduling, encryption, and control modules. Each of these plays a crucial role in ensuring secure and efficient encryption. The architecture is designed with a focus on parallelism and pipelining, which allows for high-speed data processing and optimized resource utilization.
 
-The system receives plaintext and a secret key as inputs. The key scheduling module derives subkeys, which the encryption module uses to perform multiple rounds of transformation. The control unit orchestrates data movement, synchronization, and encryption operations.
+The encryption process begins when the system receives a 64-bit plaintext message and a 64-bit secret key as inputs. The key scheduling module processes the secret key to generate 16 unique subkeys, each 48 bits long. These subkeys are then sequentially applied during encryption rounds to transform the plaintext into ciphertext. The encryption module follows the Feistel structure, executing multiple rounds of expansion, permutation, substitution, and XOR operations to ensure a high level of security.
+
+The control unit is responsible for managing the overall flow of data and synchronization between the modules. It ensures that subkeys are used in the correct order, encryption rounds execute in sequence, and final ciphertext output is correctly generated. By coordinating these operations, the control module optimizes performance and maintains accuracy in the encryption process.
 
 ### **Key Modules and Their Interconnections**
 
-**ProcessKey Module**
+**`E` Module**
 
 1. **Function:**
-
-The `ProcessKey` module is responsible for key scheduling in the encryption process. It takes a 64-bit input key and generates 16 subkeys, each 48 bits long, which are used in different rounds of encryption.
+   - Performs the Expansion Permutation (E).
+   - Expands a 32-bit input to 48-bit for XOR with subkeys.
 
 2. **Inputs and Outputs:**
-- **Input:**
-  - `key` (64-bit): The original encryption key.
-- **Outputs:**
-  - `key1` to `key16` (each 48-bit): The 16 round keys used in encryption.
+   - **Input:** `in` (32-bit) – Right half of data before Feistel function.
+   - **Output:** `out` (48-bit) – Expanded data.
+
+**`P` Module**
+
+1. **Function:**
+   - Applies the Permutation (P-box) on the output of S-boxes.
+
+2. **Inputs and Outputs:**
+   - **Input:** `in` (32-bit) – Data from S-box outputs.
+   - **Output:** `out` (32-bit) – Permuted data.
+
+**S-Box Modules (`S1` to `S8`)**
+
+1. **Function:**
+   - Each S-box (`S1` to `S8`) takes a 6-bit input and returns a 4-bit output.
+
+2. **Inputs and Outputs:**
+   - **Input:** `in` (6-bit) – XOR result of expanded right half and subkey.
+   - **Output:** `out` (4-bit) – Substituted value.
+
+**`IP` and `IP_inv` Modules**
+
+1. **Function:**
+   - `IP`: Performs the Initial Permutation (IP).
+   - `IP_inv`: Performs the Inverse Initial Permutation ($IP^{-1}$).
+
+2. **Inputs and Outputs:**
+   - **Input:** `in` (64-bit) – Message block.
+   - **Output:** `out` (64-bit) – Permuted message.
+
+**`PC1` and `PC2` Modules**
+
+1. **Function:**
+   - `PC1`: Generates a 56-bit key from a 64-bit key by applying a fixed permutation.
+   - `PC2`: Generates a 48-bit subkey from the 56-bit key halves.
+
+2. **Inputs and Outputs:**
+   - **PC1 Input:** `in` (64-bit) – Original key.
+   - **PC1 Output:** `out` (56-bit) – Permuted key.
+   - **PC2 Input:** `in` (56-bit) – Shifted key halves.
+   - **PC2 Output:** `out` (48-bit) – Round subkey.
+
+**`f` Module (Feistel Function)**
+
+1. **Function:**
+   - Implements the Feistel function.
+   - Expands the right half, XORs with the round key, applies S-boxes, and permutes the result.
+
+2. **Inputs and Outputs:**
+   - **Inputs:** `R` (32-bit) – Right half of data, `K` (48-bit) – Round key.
+   - **Output:** `OUT` (32-bit) – Processed data.
 
 3. **Subcomponents and Functions:**
+   - `E` expands `R` to 48 bits.
+   - XORs with `K`.
+   - S-boxes substitute values.
+   - `P` applies a final permutation.
 
-1. **`PC1_perm` Function:**
-   - Performs the Permuted Choice 1 (PC1) operation, reducing the 64-bit key to 56 bits.
-   - The permutation table `PC1` rearranges and removes 8 parity bits.
-
-2. **`PC2_perm` Function:**
-   - Performs the Permuted Choice 2 (PC2) operation to generate 48-bit subkeys from 56-bit values.
-   - This function is called for each round key.
-
-3. **`C_i_D_i` Function:**
-   - Implements the left shifts applied to the key halves (`C` and `D`) for each round.
-   - Uses an array `shift_left` to determine the number of shifts per round.
-
-4. **Key Schedule Execution (`always @(key)`)**
-   - Calls `PC1_perm` to generate `C0` and `D0` from the original key.
-   - Iterates through 16 rounds, applying `C_i_D_i` and `PC2_perm` to generate `key1` to `key16`.
-
-**Encrypt Module**
+**`KS` Module (Key Scheduling)**
 
 1. **Function:**
-
-The `Encrypt` module is responsible for performing the main encryption process using the Feistel structure. It applies the DES encryption algorithm to a 64-bit message using a 64-bit key.
+   - Generates 16 round subkeys.
 
 2. **Inputs and Outputs:**
+   - **Input:** `key` (64-bit) – Original encryption key.
+   - **Outputs:** `k1` to `k16` (48-bit each) – 16 round keys.
 
-- **Inputs:**
-  - `message` (64-bit): The plaintext input message.
-  - `key` (64-bit): The encryption key.
-- **Output:**
-  - `ciphertext` (64-bit): The encrypted output.
+3. **Subcomponents and Functions:**
+   - `PC1` generates `C0` and `D0`.
+   - Left shifts are applied per round.
+   - `PC2` generates subkeys.
 
-**Subcomponents and Functions:**
+**`DES` Module**
 
-1. **`perm_IP` Function:**
-   - Applies the Initial Permutation (IP) on the message.
+1. **Function:**
+   - Implements the DES encryption process.
+   - Uses 16 rounds of Feistel structure.
 
-2. **`perm_IP_inverse` Function:**
-   - Applies the Final Permutation ($IP^{-1}$) to reverse the initial permutation at the end of encryption.
+2. **Inputs and Outputs:**
+   - **Inputs:** `in` (64-bit) – Plaintext, `key` (64-bit) – Encryption key.
+   - **Output:** `out` (64-bit) – Ciphertext.
 
-3. **`perm_E` Function:**
-   - Expands the 32-bit right half of data to 48 bits for key mixing.
-
-4. **`perm_P` Function:**
-   - Applies the P-box permutation on the output of S-boxes.
-
-5. **`SBOX` Function:**
-   - Implements the 8 substitution boxes (S1 to S8).
-   - Takes a 6-bit input and returns a 4-bit output.
-
-6. **`f` Function:**
-   - Implements the Feistel function used in each round.
-   - Expands the right half of data using `perm_E`, XORs with the round key, applies `SBOX` substitution, and then `perm_P`.
-
-7. **Encryption Process (`always @(message, key)`)**
-   - Calls `ProcessKey` to generate subkeys.
-   - Splits the input message into left (`L`) and right (`R`) halves.
-   - Performs 16 rounds of the Feistel network, applying `f` function and XOR operations.
-   - Swaps `L` and `R` before applying `perm_IP_inverse` to get the final ciphertext.
+3. **Encryption Process:**
+   - `IP` permutes input.
+   - Splits into `L0` and `R0`.
+   - Performs 16 Feistel rounds:
+     - `R[i] = L[i-1]` $\oplus$ ` f(R[i-1], K[i])`
+     - `L[i] = R[i-1]`
+   - `IP_inv` permutes the final swapped halves to produce `out`.
 
 **Interconnection Between Modules**
 
-1. **`ProcessKey` → `Encrypt`**
-   - The `ProcessKey` module generates 16 subkeys (`key1` to `key16`).
-   - These subkeys are used in the `Encrypt` module for each round of encryption.
+1. **`KS` → `DES`**
+   - The `KS` module generates 16 subkeys (`k1` to `k16`).
+   - These subkeys are used in `DES` for each encryption round.
 
-2. **`Encrypt` → Output (`ciphertext`)**
-   - The `Encrypt` module processes the input message and outputs the final ciphertext.
+2. **`DES` → Output (`out`)**
+   - The `DES` module encrypts the input message and outputs the final ciphertext.
 
 ### **Explanation of Design Choices Made for the Architecture**
 
@@ -155,17 +184,23 @@ The `Encrypt` module is responsible for performing the main encryption process u
 
 3. **Resource Utilization:** The design minimizes logic and memory footprint to fit within FPGA constraints.
 
-\pagebreak
+4. **Modular Design:** Each module is designed to be reusable and easily testable, promoting code maintainability and clarity.
 
 ## 3. RESULTS
 
-![The Netlist](./netlist.jpg)
+## 4. CONCLUSION AND REFERENCES
 
-## 4. CONCLUSION
+### CONCLUSION
 
 This project successfully implemented the Data Encryption Standard (DES) algorithm using Verilog, achieving encryption through a structured Feistel network. The design incorporates key expansion, generating 16 subkeys from a 64-bit key using proper permutations (PC1, PC2) and shifting operations. The encryption process follows 16 iterative rounds, where each round applies expansion (E), S-Box substitution, and P-Box permutation to ensure diffusion and confusion. Initial and Final Permutations ($IP$ and $IP^{-1}$) further enhance security, making the encryption robust.
 
 By structuring the implementation into modular components (`ProcessKey` and `Encrypt`), the design remains efficient, reusable, and adaptable for hardware-based cryptographic applications such as FPGA and ASIC systems.
 
 Beyond encryption, this project gave us an in-depth understanding of both block cipher principles, including permutation, substitution, key-dependent transformations and a greater understanding of Verilog in general. Additionally, this project can serve as a foundation for further cryptographic advancements, such as extending DES to 3DES or transitioning to AES for enhanced security.
+
+### REFERENCES
+
+1. **FIPS PUB 46-3, "Data Encryption Standard (DES),"** National Institute of Standards and Technology (NIST), 1999. [Online]. Available: [https://csrc.nist.gov/publications/detail/fips/46/3/final](https://csrc.nist.gov/publications/detail/fips/46/3/final)
+
+2. **Data Encryption Standard (DES),** Neso Academy - YouTube Playlist. [Online]. Available: [https://www.youtube.com/playlist?list=PLBlnK6fEyqRiOCCDSdi6Ok_8PU2f_nkuf](https://www.youtube.com/playlist?list=PLBlnK6fEyqRiOCCDSdi6Ok_8PU2f_nkuf)
 
