@@ -66,7 +66,7 @@ The system receives plaintext and a secret key as inputs. The key scheduling mod
 
 ### **Key Modules and Their Interconnections**
 
-#### ProcessKey Module
+**ProcessKey Module**
 
 1. **Function:**
 
@@ -96,7 +96,7 @@ The `ProcessKey` module is responsible for key scheduling in the encryption proc
    - Calls `PC1_perm` to generate `C0` and `D0` from the original key.
    - Iterates through 16 rounds, applying `C_i_D_i` and `PC2_perm` to generate `key1` to `key16`.
 
-#### Encrypt Module
+**Encrypt Module**
 
 1. **Function:**
 
@@ -155,9 +155,11 @@ The `Encrypt` module is responsible for performing the main encryption process u
 
 3. **Resource Utilization:** The design minimizes logic and memory footprint to fit within FPGA constraints.
 
+\pagebreak
+
 ## 3. RESULTS
 
-### **Final achieved simulation results (e.g., waveforms, output data)**
+![The Netlist](./netlist.jpg)
 
 ## 4. CONCLUSION
 
