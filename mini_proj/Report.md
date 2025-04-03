@@ -56,6 +56,8 @@ The design follows the standard DES encryption process:
 
 ![A single module of the Feistel Network](./feistel.png){width=35%}
 
+![The full implementation of DES](./full.png){width=35%}
+
 ### **Description of the Overall System Architecture**
 
 The system is a hardware implementation of a DES-like encryption algorithm on an FPGA. It consists of key scheduling, encryption, and control modules, ensuring efficient data flow and processing. The architecture is optimized for parallelism and pipelining to achieve high throughput.
@@ -114,7 +116,7 @@ The `Encrypt` module is responsible for performing the main encryption process u
    - Applies the Initial Permutation (IP) on the message.
 
 2. **`perm_IP_inverse` Function:**
-   - Applies the Final Permutation ($IP_{-1}$) to reverse the initial permutation at the end of encryption.
+   - Applies the Final Permutation ($IP^{-1}$) to reverse the initial permutation at the end of encryption.
 
 3. **`perm_E` Function:**
    - Expands the 32-bit right half of data to 48 bits for key mixing.
