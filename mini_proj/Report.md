@@ -32,14 +32,16 @@ Scope:
 ## 3. Overview of the Verilog Design
 The design follows the standard DES encryption process:
 
-- **Initial Permutation (IP)**: Rearranges the 64-bit plaintext input.
+- **Initial Permutation (`IP`)**: Rearranges the 64-bit plaintext input.
+
 - **16 Feistel Rounds**:
   - Expands the right half from 32 to 48 bits (Expansion Permutation E).
   - XORs the expanded right half with a round key.
   - Uses S-Boxes to substitute 6-bit values into 4-bit outputs.
   - Applies a final permutation (P-Box) on the substituted bits.
   - Swaps halves and repeats for 16 rounds.
-- **Final Permutation ($IP^{-1}$)**: Restores the order to produce the ciphertext.
+
+- **Final Permutation (`IP_inv`)**: Restores the order to produce the ciphertext.
 
 ### Why Verilog?
 - **Parallel processing capability** of FPGA, improving encryption speed.
