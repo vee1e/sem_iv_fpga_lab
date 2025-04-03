@@ -17,19 +17,20 @@ The Data Encryption Standard (DES) is a symmetric-key algorithm widely used for 
 
 ## 2. Objectives and Scope
 
-Objectives:
+**Objectives:**
 
 - Implement DES encryption using Verilog on an FPGA.
 - Optimize the design for speed and resource efficiency.
 - Ensure correctness by comparing results with known DES outputs.
 
-Scope:
+**Scope:**
 
 - Only encryption is considered; decryption is not implemented.
 - The design includes key scheduling and Feistel function implementation.
 - The project is tested on software only; hardware testing on an actual FPGA board is not included.
 
 ## 3. Overview of the Verilog Design
+
 The design follows the standard DES encryption process:
 
 - **Initial Permutation (`IP`)**: Rearranges the 64-bit plaintext input.
@@ -44,24 +45,26 @@ The design follows the standard DES encryption process:
 - **Final Permutation (`IP_inv`)**: Restores the order to produce the ciphertext.
 
 ### Why Verilog?
-- **Parallel processing capability** of FPGA, improving encryption speed.
-- **Hardware-level security** since keys are not exposed in software memory.
-- **Customizability**, allowing for optimized DES implementations.
+
+1. **Parallel processing capability** of FPGA, improving encryption speed.
+2. **Hardware-level security** since keys are not exposed in software memory.
+3. **Customizability**, allowing for optimized DES implementations.
 
 ## 4. Problem Definition & Motivation
-- **Software-based DES implementations** are slower compared to hardware due to sequential processing.
-- **FPGAs offer parallel execution**, making them ideal for cryptographic tasks.
-- **Applications include** secure communication, embedded security, and fast encryption in resource-constrained environments.
+
+1. **Software-based DES implementations** are slower compared to hardware due to sequential processing.
+2. **FPGAs offer parallel execution**, making them ideal for cryptographic tasks.
+3. **Applications include** secure communication, embedded security, and fast encryption in resource-constrained environments.
 
 # 2. SYSTEM DESIGN AND ARCHITECTURE
 
-### **High-level design overview (block diagram of the system)**
+## High-level design overview (block diagram of the system)
 
 ![A single module of the Feistel Network](./feistel.png){width=35%}
 
 ![The full implementation of DES](./full.png){width=35%}
 
-### **Description of the Overall System Architecture**
+## Description of the Overall System Architecture
 
 The system is composed of three main components: key scheduling, encryption, and control modules. Each of these plays a crucial role in ensuring secure and efficient encryption. The architecture is designed with a focus on parallelism and pipelining, which allows for high-speed data processing and optimized resource utilization.
 
@@ -69,7 +72,7 @@ The encryption process begins when the system receives a 64-bit plaintext messag
 
 The control unit is responsible for managing the overall flow of data and synchronization between the modules. It ensures that subkeys are used in the correct order, encryption rounds execute in sequence, and final ciphertext output is correctly generated. By coordinating these operations, the control module optimizes performance and maintains accuracy in the encryption process.
 
-### **Key Modules and Their Interconnections**
+## Key Modules and Their Interconnections
 
 **`E` Module**
 
@@ -178,7 +181,7 @@ The control unit is responsible for managing the overall flow of data and synchr
 2. **`DES` → Output (`out`)**
    - The `DES` module encrypts the input message and outputs the final ciphertext.
 
-### **Explanation of Design Choices Made for the Architecture**
+### Explanation of Design Choices Made for the Architecture
 
 1. **Pipeline Optimization:** The design leverages pipelining to improve throughput, allowing multiple encryption operations to be processed simultaneously.
 
@@ -188,11 +191,11 @@ The control unit is responsible for managing the overall flow of data and synchr
 
 4. **Modular Design:** Each module is designed to be reusable and easily testable, promoting code maintainability and clarity.
 
-## 3. RESULTS
+# 3. RESULTS
 
-## 4. CONCLUSION AND REFERENCES
+# 4. CONCLUSION AND REFERENCES
 
-### CONCLUSION
+## CONCLUSION
 
 This project successfully implemented the Data Encryption Standard (DES) algorithm using Verilog, achieving encryption through a structured Feistel network. The design incorporates key expansion, generating 16 subkeys from a 64-bit key using proper permutations (PC1, PC2) and shifting operations. The encryption process follows 16 iterative rounds, where each round applies expansion (E), S-Box substitution, and P-Box permutation to ensure diffusion and confusion. Initial and Final Permutations ($IP$ and $IP^{-1}$) further enhance security, making the encryption robust.
 
@@ -200,7 +203,7 @@ By structuring the implementation into modular components (`ProcessKey` and `Enc
 
 Beyond encryption, this project gave us an in-depth understanding of both block cipher principles, including permutation, substitution, key-dependent transformations and a greater understanding of Verilog in general. Additionally, this project can serve as a foundation for further cryptographic advancements, such as extending DES to 3DES or transitioning to AES for enhanced security.
 
-### REFERENCES
+## REFERENCES
 
 1. **FIPS PUB 46-3, "Data Encryption Standard (DES),"** National Institute of Standards and Technology (NIST), 1999. [Online]. Available: [https://csrc.nist.gov/publications/detail/fips/46/3/final](https://csrc.nist.gov/publications/detail/fips/46/3/final)
 
