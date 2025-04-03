@@ -9,7 +9,7 @@ geometry: margin=3cm
 ...
 
 \begin{center}
-\textit{\Large DES Encryption and Decryption in Verilog on FPGA}
+\textit{\Large DES Cryptosystem in Verilog on FPGA}
 \end{center}
 
 # INTRODUCTION
