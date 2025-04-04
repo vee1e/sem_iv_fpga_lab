@@ -12,3 +12,4 @@ Deadline for abstract submission:
 - For A1 batch: 4th February, 2025
 - For A2 batch: 7th February, 2025
 - For A3 batch: 5th February, 2025
+
