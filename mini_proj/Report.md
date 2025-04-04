@@ -204,9 +204,17 @@ The control unit is responsible for managing the overall flow of data and synchr
 
 # 3. RESULTS
 
-# 4. CONCLUSION AND REFERENCES
+![Resultant Waveform](./waveform.png)
 
-## CONCLUSION
+![Synthesized Design Package](./synthesized-design.png)
+
+![Elaborated Schematic](./schematic-elaborated.png)
+
+![Synthesized Schematic](./schematic-synthesized.png)
+
+\pagebreak
+
+# 4. CONCLUSION
 
 This project successfully implemented the Data Encryption Standard (DES) algorithm using Verilog, achieving encryption through a structured Feistel network. The design incorporates key expansion, generating 16 subkeys from a 64-bit key using proper permutations (`PC1`, `PC2`) and shifting operations. The encryption process follows 16 iterative rounds, where each round applies expansion (`E`), S-Box substitution, and P-Box permutation to ensure diffusion and confusion. The `IP` and `IP_inv` modules are used for initial and final permutations respectively, to enchance security further.
 
@@ -214,7 +222,7 @@ By structuring the implementation into modular components (`ProcessKey` and `Enc
 
 Beyond encryption, this project gave us an in-depth understanding of both block cipher principles, including permutation, substitution, key-dependent transformations and a greater understanding of Verilog in general. Additionally, this project can serve as a foundation for further cryptographic advancements, such as extending DES to 3DES or transitioning to AES for enhanced security.
 
-## REFERENCES
+# 5. REFERENCES
 
 1. **FIPS PUB 46-3, "Data Encryption Standard (DES),"** National Institute of Standards and Technology (NIST), 1999. [Online]. Available: [https://csrc.nist.gov/publications/detail/fips/46/3/final](https://csrc.nist.gov/publications/detail/fips/46/3/final)
 
