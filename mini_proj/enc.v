@@ -48,6 +48,7 @@ module E(input [1:32] in, output [1:48] out);
   assign out[47] = in[32];
   assign out[48] = in[1];
 endmodule
+
 module P(input [1:32] in, output [1:32] out);
   assign out[1] = in[16];
   assign out[2] = in[7];
@@ -82,6 +83,7 @@ module P(input [1:32] in, output [1:32] out);
   assign out[31] = in[4];
   assign out[32] = in[25];
 endmodule
+
 module S1(input [6:1] in, output reg [4:1] out);
   always @* case (in)
     0 : out = 14;
@@ -150,6 +152,7 @@ module S1(input [6:1] in, output reg [4:1] out);
     63 : out = 13;
   endcase
 endmodule
+
 module S2(input [6:1] in, output reg [4:1] out);
   always @* case (in)
     0 : out = 15;
@@ -218,6 +221,7 @@ module S2(input [6:1] in, output reg [4:1] out);
     63 : out = 9;
   endcase
 endmodule
+
 module S3(input [6:1] in, output reg [4:1] out);
   always @* case (in)
     0 : out = 10;
@@ -286,6 +290,7 @@ module S3(input [6:1] in, output reg [4:1] out);
     63 : out = 12;
   endcase
 endmodule
+
 module S4(input [6:1] in, output reg [4:1] out);
   always @* case (in)
     0 : out = 7;
@@ -354,6 +359,7 @@ module S4(input [6:1] in, output reg [4:1] out);
     63 : out = 14;
   endcase
 endmodule
+
 module S5(input [6:1] in, output reg [4:1] out);
   always @* case (in)
     0 : out = 2;
@@ -422,6 +428,7 @@ module S5(input [6:1] in, output reg [4:1] out);
     63 : out = 3;
   endcase
 endmodule
+
 module S6(input [6:1] in, output reg [4:1] out);
   always @* case (in)
     0 : out = 12;
@@ -490,6 +497,7 @@ module S6(input [6:1] in, output reg [4:1] out);
     63 : out = 13;
   endcase
 endmodule
+
 module S7(input [6:1] in, output reg [4:1] out);
   always @* case (in)
     0 : out = 4;
@@ -558,6 +566,7 @@ module S7(input [6:1] in, output reg [4:1] out);
     63 : out = 12;
   endcase
 endmodule
+
 module S8(input [6:1] in, output reg [4:1] out);
   always @* case (in)
     0 : out = 13;
@@ -626,6 +635,7 @@ module S8(input [6:1] in, output reg [4:1] out);
     63 : out = 11;
   endcase
 endmodule
+
 module IP(input [1:64] in, output [1:64] out);
   assign out[1] = in[58];
   assign out[2] = in[50];
@@ -692,6 +702,7 @@ module IP(input [1:64] in, output [1:64] out);
   assign out[63] = in[15];
   assign out[64] = in[7];
 endmodule
+
 module IP_inv(input [1:64] in, output [1:64] out);
   assign out[1] = in[40];
   assign out[2] = in[8];
@@ -758,6 +769,7 @@ module IP_inv(input [1:64] in, output [1:64] out);
   assign out[63] = in[57];
   assign out[64] = in[25];
 endmodule
+
 module PC1(input [1:64] in, output [1:56] out);
   assign out[1] = in[57];
   assign out[2] = in[49];
@@ -816,6 +828,7 @@ module PC1(input [1:64] in, output [1:56] out);
   assign out[55] = in[12];
   assign out[56] = in[4];
 endmodule
+
 module PC2(input [1:56] in, output [1:48] out);
   assign out[1] = in[14];
   assign out[2] = in[17];
@@ -890,27 +903,13 @@ module f(input [32:1] R, input [48:1] K, output [32:1] OUT);
   P P_inst(S_out, OUT);
 endmodule
 
+
 module KS_left_shift(input [5:1] level, input [28:1] in, output [28:1] out);
   assign out = (level == 1 || level == 2 || level == 9 || level == 16) ?
                 {in[27:1], in[28]} : {in[26:1], in[28:27]};
 endmodule
 
-module KS(input [64:1] key, output [48:1] k1,
-                            output [48:1] k2,
-                            output [48:1] k3,
-                            output [48:1] k4,
-                            output [48:1] k5,
-                            output [48:1] k6,
-                            output [48:1] k7,
-                            output [48:1] k8,
-                            output [48:1] k9,
-                            output [48:1] k10,
-                            output [48:1] k11,
-                            output [48:1] k12,
-                            output [48:1] k13,
-                            output [48:1] k14,
-                            output [48:1] k15,
-                            output [48:1] k16);
+module KS(input [64:1] key, output [48:1] k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12, k13, k14, k15, k16);
   wire [56:1] key_pc1;
   PC1 pc1_inst(key, key_pc1);
 
@@ -948,6 +947,7 @@ module KS(input [64:1] key, output [48:1] k1,
   assign k16 = k[16];
 endmodule
 
+
 module DES_enc(input [64:1] in, input [64:1] key, output [64:1] out);
   wire [64:1] in_ip;
   IP ip_inst(in, in_ip);
@@ -973,6 +973,7 @@ module DES_enc(input [64:1] in, input [64:1] key, output [64:1] out);
   IP_inv ip_inv_inst({r[16], l[16]}, out);
 endmodule
 
+
 module DES_dec(input [64:1] in, input [64:1] key, output [64:1] out);
   wire [64:1] in_ip;
   IP ip_inst(in, in_ip);
@@ -997,4 +998,5 @@ module DES_dec(input [64:1] in, input [64:1] key, output [64:1] out);
 
   IP_inv ip_inv_inst({r[16], l[16]}, out);
 endmodule
+
 
